@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RefreshCw, ArrowLeft, Layers, Sparkles, ImageOff, Heart, Gift } from 'lucide-react';
 
 const App = () => {
   // Navigation State
-  const [screen, setScreen] = useState('welcome'); // 'welcome' or 'game'
+  const [screen, setScreen] = useState('welcome');
 
   // Game Logic State
   const INITIAL_DECK = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const [deck, setDeck] = useState(INITIAL_DECK);
-  const [currentCard, setCurrentCard] = useState(0); // 0 representing the back of the card (card0.png)
+  const [currentCard, setCurrentCard] = useState(0); 
   const [isGameOver, setIsGameOver] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // טעינה מראש של התמונות כדי למנוע השהיה בזמן המשחק
+  useEffect(() => {
+    [0, ...INITIAL_DECK].forEach((num) => {
+      const img = new Image();
+      img.src = `./card${num}.png`;
+    });
+  }, []);
 
   // Initialize or restart the game
   const restartGame = () => {
@@ -31,7 +39,6 @@ const App = () => {
     setImgError(false);
     setIsAnimating(true);
     
-    // Animation swap effect
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * deck.length);
       const selectedCard = deck[randomIndex];
@@ -100,7 +107,6 @@ const App = () => {
               <span>נותרו: {deck.length}</span>
             </div>
             
-            {/* Back to Welcome Button */}
             <button 
               onClick={() => setScreen('welcome')}
               className="absolute top-4 right-4 text-purple-300 hover:text-purple-500 transition-colors"
@@ -112,19 +118,18 @@ const App = () => {
           {/* Main Interaction Area */}
           <div className="p-8 flex flex-col items-center">
             
-            {/* Card Display with Image & Fallback */}
+            {/* Card Display */}
             <div className={`w-full aspect-[3/4] max-w-[240px] mb-8 relative transition-all duration-300 ${isAnimating ? 'scale-95 opacity-50' : 'scale-100 opacity-100'}`}>
               <div className={`w-full h-full rounded-[2.5rem] border-[12px] border-white shadow-2xl overflow-hidden relative bg-[#E6E6FA] flex items-center justify-center ${!isAnimating ? 'animate-bounce-gentle' : ''}`}>
                 
                 {!imgError ? (
                   <img 
-                    src={`card${currentCard}.png`} 
+                    src={`./card${currentCard}.png`} 
                     alt={currentCard === 0 ? "גב הקלף" : `קלף מספר ${currentCard}`}
                     className="w-full h-full object-cover"
                     onError={() => setImgError(true)}
                   />
                 ) : (
-                  /* Fallback UI if image is missing */
                   <div className="w-full h-full flex flex-col items-center justify-center bg-[#E6E6FA] p-6 text-center">
                     <ImageOff className="text-purple-300 mb-2 opacity-50" size={40} />
                     <span className="text-8xl font-black text-[#D8B4FE] drop-shadow-sm">
@@ -198,7 +203,6 @@ const App = () => {
           background-size: 400% 400%;
           animation: gradient-bg 15s ease infinite;
         }
-
         @keyframes bounce-gentle {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
@@ -206,7 +210,6 @@ const App = () => {
         .animate-bounce-gentle {
           animation: bounce-gentle 3.5s ease-in-out infinite;
         }
-
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }

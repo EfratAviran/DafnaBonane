@@ -17,6 +17,7 @@
 
         const App = () => {
             const [screen, setScreen] = useState('welcome');
+            // עדכון רשימת הקלפים ל-11 קלפים (1 עד 10)
             const INITIAL_DECK = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
             const [deck, setDeck] = useState(INITIAL_DECK);
             const [currentCard, setCurrentCard] = useState(0); 
@@ -24,7 +25,6 @@
             const [imgError, setImgError] = useState(false);
             const [isAnimating, setIsAnimating] = useState(false);
 
-            // טעינה מראש של התמונות לזיכרון הדפדפן
             useEffect(() => {
                 [0, ...INITIAL_DECK].forEach((num) => {
                     const img = new Image();
@@ -60,7 +60,6 @@
             return (
                 <div className="min-h-screen bg-pink-100 flex flex-col items-center justify-center p-4 font-sans" dir="rtl">
                     {screen === 'welcome' ? (
-                        /* --- מסך פתיחה --- */
                         <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-10 flex flex-col items-center text-center border-4 border-rose-200">
                             <div className="text-6xl mb-6">🎂</div>
                             <h1 className="text-4xl font-black text-rose-800 mb-6">מזל טוב דפנה!</h1>
@@ -73,7 +72,7 @@
                                 <p>שתמשיכי להוביל ולהשרות מאישיותך המיוחדת על כולנו.</p>
                                 <div className="pt-6">
                                     <p className="font-black text-rose-500 text-2xl">באהבה ובהערכה,</p>
-                                    <p className="font-bold text-xl">צוות המפקחים</p>
+                                    <p className="font-bold text-xl text-gray-800">מפקחי היסודי</p>
                                 </div>
                             </div>
                             <button 
@@ -84,22 +83,20 @@
                             </button>
                         </div>
                     ) : (
-                        /* --- מסך המשחק --- */
                         <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-4 border-purple-200">
                             <div className="bg-purple-100 p-6 text-center relative border-b-2 border-purple-200">
                                 <h1 className="text-3xl font-black text-purple-800">דפנה שלנו</h1>
                                 <div className="absolute top-4 left-4 bg-white rounded-full px-4 py-1 text-sm font-black text-purple-600 border-2 border-purple-200">
-                                    קלפים: {deck.length}
+                                    נותרו: {deck.length}
                                 </div>
-                                <button onClick={() => setScreen('welcome')} className="absolute top-4 right-4 text-purple-400 text-2xl hover:scale-110 transition-transform">
+                                <button onClick={() => setScreen('welcome')} className="absolute top-4 right-4 text-purple-400 text-2xl">
                                     🏠
                                 </button>
                             </div>
 
                             <div className="p-8 flex flex-col items-center">
-                                {/* תצוגת התמונה - שונה ל-object-contain כדי למנוע חיתוך */}
                                 <div className={`w-full aspect-[3/4] max-w-[280px] mb-8 transition-all duration-300 ${isAnimating ? 'scale-90 opacity-0' : 'scale-100 opacity-100'}`}>
-                                    <div className="w-full h-full rounded-3xl border-8 border-white shadow-2xl overflow-hidden bg-gray-50 flex items-center justify-center relative">
+                                    <div className="w-full h-full rounded-3xl border-8 border-white shadow-2xl overflow-hidden bg-gray-50 flex items-center justify-center">
                                         {!imgError ? (
                                             <img 
                                                 src={`./card${currentCard}.png`} 
@@ -109,23 +106,13 @@
                                         ) : (
                                             <div className="text-center p-6 bg-gray-100 w-full h-full flex flex-col items-center justify-center">
                                                 <div className="text-6xl mb-4">✨</div>
-                                                <div className="text-6xl font-black text-purple-200 opacity-50">
+                                                <div className="text-4xl font-black text-purple-200">
                                                     {currentCard === 0 ? "?" : currentCard}
                                                 </div>
-                                                <p className="text-sm font-bold text-gray-400 mt-4 uppercase">תמונה בטעינה...</p>
+                                                <p className="text-xs font-bold text-gray-400 mt-4">תמונה בטעינה...</p>
                                             </div>
                                         )}
-                                        {/* עיטור קטן של כרטיס */}
-                                        <div className="absolute bottom-2 right-2 text-xs font-bold text-gray-300 opacity-50">#{currentCard}</div>
                                     </div>
-                                </div>
-
-                                <div className="h-8 mb-4">
-                                    {isGameOver && (
-                                        <div className="text-rose-500 font-black animate-bounce text-lg">
-                                            החפיסה נגמרה! לחצי על התחל מחדש 🥳
-                                        </div>
-                                    )}
                                 </div>
 
                                 <div className="flex flex-col w-full gap-4">
@@ -133,18 +120,16 @@
                                         onClick={drawCard} 
                                         disabled={deck.length === 0 || isAnimating} 
                                         className={`py-5 px-8 rounded-2xl font-black text-2xl transition-all shadow-lg flex items-center justify-center gap-3
-                                            ${deck.length === 0 ? 'bg-gray-200 text-gray-400' : 'bg-rose-400 text-white hover:bg-rose-500 active:scale-95'}`}
+                                            ${deck.length === 0 ? 'bg-gray-200 text-gray-400' : 'bg-rose-400 text-white hover:bg-rose-500'}`}
                                     >
-                                        <span>החלף קלף</span>
-                                        <span className="text-2xl">✨</span>
+                                        <span>החלף קלף ✨</span>
                                     </button>
                                     
                                     <button 
                                         onClick={restartGame} 
-                                        className="py-3 px-6 rounded-xl font-bold text-blue-500 border-2 border-blue-100 hover:bg-blue-50 transition-all text-sm flex items-center justify-center gap-2"
+                                        className="py-3 px-6 rounded-xl font-bold text-blue-500 border-2 border-blue-100 hover:bg-blue-50 transition-all text-sm"
                                     >
-                                        <span>🔄</span>
-                                        <span>התחל מחדש</span>
+                                        🔄 התחל מחדש
                                     </button>
                                 </div>
                             </div>

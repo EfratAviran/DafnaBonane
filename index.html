@@ -1,225 +1,150 @@
-import React, { useState, useEffect } from 'react';
-import { RefreshCw, ArrowLeft, Layers, Sparkles, ImageOff, Heart, Gift } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מזל טוב לדפנה</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="root"></div>
 
-const App = () => {
-  // Navigation State
-  const [screen, setScreen] = useState('welcome');
+    <script type="text/babel">
+        // כאן נכנס הקוד שכתבנו קודם
+        const { useState, useEffect } = React;
+        
+        // יצירת האייקונים של Lucide
+        const { RefreshCw, ArrowLeft, Layers, Sparkles, ImageOff, Heart, Gift } = {
+            RefreshCw: (props) => <i data-lucide="refresh-cw" {...props}></i>,
+            ArrowLeft: (props) => <i data-lucide="arrow-left" {...props}></i>,
+            Layers: (props) => <i data-lucide="layers" {...props}></i>,
+            Sparkles: (props) => <i data-lucide="sparkles" {...props}></i>,
+            ImageOff: (props) => <i data-lucide="image-off" {...props}></i>,
+            Heart: (props) => <i data-lucide="heart" {...props}></i>,
+            Gift: (props) => <i data-lucide="gift" {...props}></i>
+        };
 
-  // Game Logic State
-  const INITIAL_DECK = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const [deck, setDeck] = useState(INITIAL_DECK);
-  const [currentCard, setCurrentCard] = useState(0); 
-  const [isGameOver, setIsGameOver] = useState(false);
-  const [imgError, setImgError] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+        const App = () => {
+            const [screen, setScreen] = useState('welcome');
+            const INITIAL_DECK = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            const [deck, setDeck] = useState(INITIAL_DECK);
+            const [currentCard, setCurrentCard] = useState(0); 
+            const [isGameOver, setIsGameOver] = useState(false);
+            const [imgError, setImgError] = useState(false);
+            const [isAnimating, setIsAnimating] = useState(false);
 
-  // טעינה מראש של התמונות כדי למנוע השהיה בזמן המשחק
-  useEffect(() => {
-    [0, ...INITIAL_DECK].forEach((num) => {
-      const img = new Image();
-      img.src = `./card${num}.png`;
-    });
-  }, []);
+            useEffect(() => {
+                lucide.createIcons();
+                [0, ...INITIAL_DECK].forEach((num) => {
+                    const img = new Image();
+                    img.src = `./card${num}.png`;
+                });
+            }, [screen, currentCard]);
 
-  // Initialize or restart the game
-  const restartGame = () => {
-    setDeck(INITIAL_DECK);
-    setCurrentCard(0);
-    setIsGameOver(false);
-    setImgError(false);
-  };
+            const restartGame = () => {
+                setDeck(INITIAL_DECK);
+                setCurrentCard(0);
+                setIsGameOver(false);
+                setImgError(false);
+            };
 
-  // Draw a random card
-  const drawCard = () => {
-    if (deck.length === 0) {
-      setIsGameOver(true);
-      return;
-    }
+            const drawCard = () => {
+                if (deck.length === 0) {
+                    setIsGameOver(true);
+                    return;
+                }
+                setImgError(false);
+                setIsAnimating(true);
+                setTimeout(() => {
+                    const randomIndex = Math.floor(Math.random() * deck.length);
+                    const selectedCard = deck[randomIndex];
+                    const newDeck = deck.filter((_, index) => index !== randomIndex);
+                    setCurrentCard(selectedCard);
+                    setDeck(newDeck);
+                    setIsAnimating(false);
+                }, 150);
+            };
 
-    setImgError(false);
-    setIsAnimating(true);
-    
-    setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * deck.length);
-      const selectedCard = deck[randomIndex];
-      const newDeck = deck.filter((_, index) => index !== randomIndex);
-      
-      setCurrentCard(selectedCard);
-      setDeck(newDeck);
-      setIsAnimating(false);
-    }, 150);
-  };
+            return (
+                <div className="min-h-screen animate-gradient flex flex-col items-center justify-center p-4 font-sans text-slate-800" dir="rtl">
+                    {screen === 'welcome' ? (
+                        <div className="max-w-md w-full bg-white/90 backdrop-blur-md rounded-[3rem] shadow-2xl p-10 flex flex-col items-center text-center border border-white/50 animate-fade-in">
+                            <div className="bg-rose-100 p-4 rounded-full mb-6 text-rose-400">
+                                <i data-lucide="gift" style={{width: '48px', height: '48px'}}></i>
+                            </div>
+                            <h1 className="text-4xl font-black text-rose-800 mb-6 italic">מזל טוב דפנה!</h1>
+                            <div className="space-y-4 text-lg text-slate-700 leading-relaxed font-medium">
+                                <p className="text-rose-600 font-bold text-xl">דפנה יקרה,</p>
+                                <p>לרגל יום הולדתך, בחרנו להעניק לך שי צנוע של הערכה:</p>
+                                <p className="bg-purple-50 p-4 rounded-2xl border border-purple-100 text-purple-900 shadow-sm font-bold">
+                                    כל מפקחת ומפקח שיתפו בתכונה ייחודית אחת המאפיינת אותך בעיניהם.
+                                </p>
+                                <p>שתמשיכי להוביל ולהשרות מאישיותך המיוחדת על כולנו.</p>
+                                <div className="pt-4">
+                                    <p className="font-black text-rose-500 text-xl">באהבה ובהערכה,</p>
+                                    <p className="font-bold">צוות המפקחים</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setScreen('game')} className="mt-10 flex items-center justify-center gap-3 py-5 px-10 rounded-[2rem] font-black text-xl bg-[#FFB7C5] text-white hover:bg-[#FF9EAF] active:scale-95 transition-all shadow-lg w-full">
+                                <span>הצג דברי מפקחים</span>
+                                <i data-lucide="heart" fill="white"></i>
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="max-w-md w-full bg-white/90 backdrop-blur-md rounded-[3rem] shadow-2xl overflow-hidden border border-white/50 animate-fade-in">
+                            <div className="bg-purple-100/50 p-8 text-center relative border-b border-purple-200">
+                                <h1 className="text-3xl font-black text-purple-800 mb-1">מזל טוב לדפנה שלנו</h1>
+                                <div className="absolute top-4 left-4 bg-white/80 rounded-full px-4 py-1.5 text-xs font-black text-purple-600 flex items-center gap-2 border border-purple-100">
+                                    <span>נותרו: {deck.length}</span>
+                                </div>
+                                <button onClick={() => setScreen('welcome')} className="absolute top-4 right-4 text-purple-300 hover:text-purple-500">
+                                    <i data-lucide="arrow-left" className="rotate-180"></i>
+                                </button>
+                            </div>
+                            <div className="p-8 flex flex-col items-center">
+                                <div className={`w-full aspect-[3/4] max-w-[240px] mb-8 relative transition-all duration-300 ${isAnimating ? 'scale-95 opacity-50' : 'scale-100'}`}>
+                                    <div className="w-full h-full rounded-[2.5rem] border-[12px] border-white shadow-2xl overflow-hidden relative bg-[#E6E6FA] flex items-center justify-center">
+                                        {!imgError ? (
+                                            <img src={`./card${currentCard}.png`} className="w-full h-full object-cover" onError={() => setImgError(true)} />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center bg-[#E6E6FA] p-6 text-center">
+                                                <i data-lucide="image-off" className="text-purple-300 mb-2"></i>
+                                                <span className="text-7xl font-black text-[#D8B4FE]">{currentCard === 0 ? "?" : currentCard}</span>
+                                                <p className="text-xs font-bold text-purple-400 mt-2">תמונה חסרה</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex flex-col w-full gap-4">
+                                    <button onClick={drawCard} disabled={deck.length === 0 || isAnimating} className={`flex items-center justify-center gap-3 py-5 px-8 rounded-[1.5rem] font-black text-xl transition-all shadow-lg ${deck.length === 0 ? 'bg-slate-100 text-slate-300' : 'bg-[#FFB7C5] text-white hover:bg-[#FF9EAF]'}`}>
+                                        <i data-lucide="arrow-left"></i>
+                                        <span>החלף קלף</span>
+                                    </button>
+                                    <button onClick={restartGame} className="flex items-center justify-center gap-2 py-4 px-6 rounded-[1.2rem] font-bold text-blue-500 bg-[#B3E5FC]/40 border-2 border-[#B3E5FC] hover:bg-[#B3E5FC]/60 transition-all text-sm uppercase">
+                                        <i data-lucide="refresh-cw" style={{width: '16px'}}></i>
+                                        התחל מחדש
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
-  return (
-    <div className="min-h-screen animate-gradient flex flex-col items-center justify-center p-4 font-sans text-slate-800 transition-all duration-1000" dir="rtl">
-      
-      {screen === 'welcome' ? (
-        /* --- Welcome Screen --- */
-        <div className="max-w-md w-full bg-white/90 backdrop-blur-md rounded-[3rem] shadow-2xl p-10 flex flex-col items-center text-center border border-white/50 animate-fade-in">
-          <div className="bg-rose-100 p-4 rounded-full mb-6">
-            <Gift className="text-rose-400" size={48} />
-          </div>
-          
-          <h1 className="text-4xl font-black text-rose-800 mb-6 tracking-tight">
-            מזל טוב דפנה!
-          </h1>
-          
-          <div className="space-y-4 text-lg text-slate-700 leading-relaxed font-medium">
-            <p className="text-rose-600 font-bold text-xl">דפנה יקרה,</p>
-            <p>לרגל יום הולדתך, בחרנו להעניק לך שי צנוע של הערכה:</p>
-            <p className="bg-purple-50 p-4 rounded-2xl border border-purple-100 text-purple-900 shadow-sm">
-              כל מפקחת ומפקח שיתפו בתכונה ייחודית אחת המאפיינת אותך בעיניהם.
-            </p>
-            <p>אנו מאחלים לך שפע של מזל טוב, בריאות, אושר ונחת.</p>
-            <p>שתמשיכי להוביל ולהשרות מאישיותך המיוחדת על כולנו.</p>
-            <div className="pt-4">
-              <p className="font-black text-rose-500">באהבה ובהערכה,</p>
-              <p className="font-bold">צוות המפקחים</p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setScreen('game')}
-            className="mt-10 flex items-center justify-center gap-3 py-5 px-10 rounded-[2rem] font-black text-xl bg-[#FFB7C5] text-white hover:bg-[#FF9EAF] active:scale-95 transition-all shadow-lg hover:shadow-pink-200 w-full"
-          >
-            <span>הצג דברי מפקחים</span>
-            <Heart size={24} fill="white" />
-          </button>
-        </div>
-      ) : (
-        /* --- Game Screen --- */
-        <div className="max-w-md w-full bg-white/90 backdrop-blur-md rounded-[3rem] shadow-2xl overflow-hidden border border-white/50 animate-fade-in">
-          
-          {/* Header Section */}
-          <div className="bg-purple-100/50 p-8 text-center relative border-b border-purple-200">
-            <div className="flex justify-center mb-2">
-              <Sparkles className="text-purple-400 fill-purple-200 animate-pulse" size={28} />
-            </div>
-            <h1 className="text-3xl font-black text-purple-800 mb-1 tracking-tight">
-              מזל טוב לדפנה שלנו
-            </h1>
-            <p className="text-purple-500 text-sm font-bold opacity-80 tracking-wide">
-              מזל טוב ליום הולדת
-            </p>
-            
-            <div className="absolute top-4 left-4 bg-white/80 rounded-full px-4 py-1.5 text-xs font-black text-purple-600 flex items-center gap-2 border border-purple-100 shadow-sm">
-              <Layers size={14} />
-              <span>נותרו: {deck.length}</span>
-            </div>
-            
-            <button 
-              onClick={() => setScreen('welcome')}
-              className="absolute top-4 right-4 text-purple-300 hover:text-purple-500 transition-colors"
-            >
-              <ArrowLeft size={20} className="rotate-180" />
-            </button>
-          </div>
-
-          {/* Main Interaction Area */}
-          <div className="p-8 flex flex-col items-center">
-            
-            {/* Card Display */}
-            <div className={`w-full aspect-[3/4] max-w-[240px] mb-8 relative transition-all duration-300 ${isAnimating ? 'scale-95 opacity-50' : 'scale-100 opacity-100'}`}>
-              <div className={`w-full h-full rounded-[2.5rem] border-[12px] border-white shadow-2xl overflow-hidden relative bg-[#E6E6FA] flex items-center justify-center ${!isAnimating ? 'animate-bounce-gentle' : ''}`}>
-                
-                {!imgError ? (
-                  <img 
-                    src={`./card${currentCard}.png`} 
-                    alt={currentCard === 0 ? "גב הקלף" : `קלף מספר ${currentCard}`}
-                    className="w-full h-full object-cover"
-                    onError={() => setImgError(true)}
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-[#E6E6FA] p-6 text-center">
-                    <ImageOff className="text-purple-300 mb-2 opacity-50" size={40} />
-                    <span className="text-8xl font-black text-[#D8B4FE] drop-shadow-sm">
-                      {currentCard === 0 ? "?" : currentCard}
-                    </span>
-                    <p className="text-[10px] font-bold text-purple-400 mt-2 uppercase tracking-tighter">תמונה חסרה</p>
-                  </div>
-                )}
-
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Status Message */}
-            <div className="h-10 mb-2 flex items-center justify-center">
-              {isGameOver && (
-                <div className="bg-rose-50 text-rose-500 font-black px-6 py-2 rounded-full text-sm border border-rose-100 animate-bounce">
-                  החפיסה נגמרה! לחצי על התחל מחדש
+                    <style>{`
+                        @keyframes gradient-bg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+                        .animate-gradient { background: linear-gradient(-45deg, #FFD1DC, #E6E6FA, #B3E5FC, #FFD1DC); background-size: 400% 400%; animation: gradient-bg 15s ease infinite; }
+                        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                        .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
+                    `}</style>
                 </div>
-              )}
-            </div>
+            );
+        };
 
-            {/* Action Buttons */}
-            <div className="flex flex-col w-full gap-4">
-              <button
-                onClick={drawCard}
-                disabled={deck.length === 0 || isAnimating}
-                className={`flex items-center justify-center gap-3 py-5 px-8 rounded-[1.5rem] font-black text-xl transition-all shadow-lg
-                  ${deck.length === 0 
-                    ? 'bg-slate-100 text-slate-300 cursor-not-allowed shadow-none' 
-                    : 'bg-[#FFB7C5] text-white hover:bg-[#FF9EAF] active:scale-95 hover:shadow-pink-200'}`}
-              >
-                <ArrowLeft size={24} strokeWidth={3} />
-                <span>החלף קלף</span>
-              </button>
-
-              <button
-                onClick={restartGame}
-                className="flex items-center justify-center gap-2 py-4 px-6 rounded-[1.2rem] font-bold text-blue-500 bg-[#B3E5FC]/40 border-2 border-[#B3E5FC] hover:bg-[#B3E5FC]/60 active:scale-95 transition-all text-sm uppercase tracking-[0.2em]"
-              >
-                <RefreshCw size={16} />
-                התחל מחדש
-              </button>
-            </div>
-          </div>
-
-          {/* Footer Progress Dots */}
-          <div className="bg-purple-50/30 p-6 border-t border-purple-50">
-            <div className="flex justify-center gap-2.5">
-              {INITIAL_DECK.map((num) => (
-                <div 
-                  key={num}
-                  className={`w-3 h-3 rounded-full transition-all duration-700 ${
-                    deck.includes(num) ? 'bg-purple-200 shadow-inner' : 'bg-purple-50 scale-50 opacity-30'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <style>{`
-        @keyframes gradient-bg {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        .animate-gradient {
-          background: linear-gradient(-45deg, #FFD1DC, #E6E6FA, #B3E5FC, #FFD1DC);
-          background-size: 400% 400%;
-          animation: gradient-bg 15s ease infinite;
-        }
-        @keyframes bounce-gentle {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        .animate-bounce-gentle {
-          animation: bounce-gentle 3.5s ease-in-out infinite;
-        }
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out forwards;
-        }
-      `}</style>
-    </div>
-  );
-};
-
-export default App;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
